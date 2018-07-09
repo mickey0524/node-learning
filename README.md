@@ -8,4 +8,4 @@
 
 * [2018年7月集锦](./2018/7月/knowledge.md)
 
-	模块: path
+	模块: path, events(EventEmitter)
