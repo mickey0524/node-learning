@@ -6,6 +6,6 @@
 
 > 每天学一点
 
-* [2018年7月集锦](./2018/7月/knowledge.md)
+* [2018年7月集锦](./docs/baseModule.md)
 
-	模块: path, events(EventEmitter)
+	模块: path, events(EventEmitter), os, fs
