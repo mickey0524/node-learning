@@ -151,7 +151,7 @@
 	    	console.log(data);
 	    });
 	    ```
-   * fs.rename(oldPath, newPath, callback)
+    * fs.rename(oldPath, newPath, callback)
 
    		该方法可用于移动或重命名指定文件。`oldPath`参数为该文件原来的路径，`newPath`参数为该文件移动或重命名之后的路径，这两个参数都必须能传入文件完整的绝对物理路径。`callback`回调参数当中只有一个错误信息参数，一般在`oldPath`当中指定的文件不存在或者该操作失败时触发调用
    		
@@ -173,4 +173,64 @@
    		});
    		```
   
-  * fs的操作默认是异步的，可以在api后加上`Sync`来使得操作变成同步，同步操作需要使用`try catch`来捕获可能发生的错误
+    * fs的操作默认是异步的，可以在api后加上`Sync`来使得操作变成同步，同步操作需要使用`try catch`来捕获可能发生的错误
+
+    * fs中的流式操作
+    
+        * fs.createReadStream(path[, options])
+
+            ```js
+            const fs = require('fs');
+            
+            const rs = fs.createReadStream('sample.txt', 'utf-8');
+
+            rs.on('data', function (chunk) {
+                console.log('DATA:')
+                console.log(chunk);
+            });
+
+            rs.on('end', function () {
+                console.log('END');
+            });
+
+            rs.on('error', function (err) {
+                console.log('ERROR: ' + err);
+            });
+            ```
+
+        * fs.createWriteStream(path[, options])
+
+            ```js
+            var fs = require('fs');
+
+            var ws1 = fs.createWriteStream('output1.txt', 'utf-8');
+            ws1.write('使用Stream写入文本数据...\n');
+            ws1.write('END.');
+            ws1.end();
+
+            var ws2 = fs.createWriteStream('output2.txt');
+            ws2.write(new Buffer('使用Stream写入二进制数据...\n', 'utf-8'));
+            ws2.write(new Buffer('END.', 'utf-8'));
+            ws2.end();
+            ```
+        
+        * pipe
+
+            就像可以把两个水管串成一个更长的水管一样，两个流也可以串起来。一个`Readable`流和一个`Writable`流串起来后，所有的数据自动从`Readable`流进入`Writable`流，这种操作叫`pipe`
+
+            在`Node.js`中，`Readable`流有一个`pipe()`方法，就是用来干这件事的
+            
+            ```js
+            var fs = require('fs');
+
+            var rs = fs.createReadStream('sample.txt');
+            var ws = fs.createWriteStream('copied.txt');
+
+            rs.pipe(ws);
+            ```
+            
+            默认情况下，当`Readable`流的数据读取完毕，`end`事件被触发后，将自动关闭`Writable`流。如果我们不希望自动关闭`Writable`流，需要转入参数
+
+            ```js
+            readable.pipe(writable, { end: false });
+            ```
